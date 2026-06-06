@@ -1,4 +1,4 @@
-﻿import 'dotenv/config';
+import 'dotenv/config';
 import { Client, Collection, GatewayIntentBits } from 'discord.js';
 import { REST } from '@discordjs/rest';
 import express from 'express';
@@ -13,7 +13,7 @@ import { checkBirthdays } from './services/birthdayService.js';
 import { checkGiveaways } from './services/giveawayService.js';
 import { loadCommands, registerCommands as registerSlashCommands } from './handlers/commandLoader.js';
 
-class TitanBot extends Client {
+class InsightBot extends Client {
   constructor() {
     super({
       intents: [
@@ -42,11 +42,14 @@ class TitanBot extends Client {
     this.cooldowns = new Collection();
     this.db = null;
     this.rest = new REST({ version: '10' }).setToken(config.bot.token);
+    
+    // Music player storage
+    this.players = new Collection();
   }
 
   async start() {
     try {
-      startupLog('Starting TitanBot...');
+      startupLog('Starting Insight Bot...');
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       startupLog('Initializing database...');
@@ -184,7 +187,7 @@ class TitanBot extends Client {
 
     app.get('/', (req, res) => {
       res.status(200).json({ 
-        message: 'TitanBot System Online',
+        message: 'Insight Bot System Online',
         version: '2.0.0',
         timestamp: new Date().toISOString()
       });
@@ -356,7 +359,7 @@ class TitanBot extends Client {
 }
 
 try {
-  const bot = new TitanBot();
+  const bot = new InsightBot();
   
   const setupShutdown = () => {
     process.on('SIGTERM', () => bot.shutdown('SIGTERM'));
@@ -380,7 +383,6 @@ try {
   process.exit(1);
 }
 
-export default TitanBot;
-
+export default InsightBot;
 
 
